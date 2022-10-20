@@ -21,6 +21,7 @@ const thoughtsController = {
         Thoughts.find({})
         .populate({path: 'reactions', select: '-__v'})
         .select('-__v')
+        .then(dbThoughtsData => res.json(dbThoughtsData))
         .catch(err => {
             console.log(err);
             res.status(500).json(err);
@@ -46,7 +47,7 @@ const thoughtsController = {
 
     updateThoughts({params, body}, res) {
         Thoughts.findOneAndUpdate({_id: params.id}, body, {new: true, runValidators: true})
-        .populate({path: 'reactions', select: '__v'})
+        .populate({path: 'reactions', select: '-__v'})
         .select('-___v')
         .then(dbThoughtsData => {
             if (!dbThoughtsData) {
@@ -66,9 +67,8 @@ const thoughtsController = {
                 return;
             }
             res.json(dbThoughtsData);
-            .catch(err => res.status(400).json(err));
             })
-            
+            .catch(err => res.status(400).json(err));
     },
 
     addReaction({params, body}, res) {
@@ -101,3 +101,8 @@ const thoughtsController = {
 };
 
 module.exports = thoughtsController;
+
+
+
+
+
